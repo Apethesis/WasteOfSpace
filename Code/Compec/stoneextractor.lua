@@ -7,7 +7,5 @@ while true do
     if cur > #mat then
         cur = 1
     end
-    for i=1,10 do
-        wait(0.9)
-    end
+    wait(10.1)
 end
