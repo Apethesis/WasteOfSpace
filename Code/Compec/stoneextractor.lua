@@ -1,5 +1,5 @@
 local extractor = GetPartFromPort(1,"Extractor")
-local mat = {"Stone","Silicon","Sulfur","Flint","Oil","Ruby","Ice"}
+local mat = {"Stone","Silicon","Sulfur","Flint","Oil","Ruby","Ice","Quartz"}
 local cur = 1
 while true do
     extractor:Configure({["MaterialToExtract"] = mat[cur]})
