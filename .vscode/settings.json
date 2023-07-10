@@ -1,5 +1,6 @@
 {
     "robloxLsp.diagnostics.globals": [
-        "GetPartFromPort"
+        "GetPartFromPort",
+        "GetPartsFromPort"
     ]
 }
