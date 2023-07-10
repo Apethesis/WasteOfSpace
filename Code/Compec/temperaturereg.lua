@@ -225,4 +225,5 @@ while true do
             heaters[cur]:Configure({["SwitchValue"] = true})
         end
     end
+    wait(1.1)
 end
