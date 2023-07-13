@@ -1,9 +1,22 @@
 local coolers = GetPartsFromPort(1,"Cooler")
 local heaters = GetPartsFromPort(2,"Heater")
 local tempmeasure = GetPartFromPort(3,"Instrument")
+local screen = GetPartFromPort(4,"Screen")
+local screennum = screen:CreateElement("TextLabel", {
+    ["Size"] = UDim2.new(1, 0, 1, 0),
+    ["TextScaled"] = true,
+    ["Font"] = Enum.Font.Code,
+    ["TextColor3"] = Color3.new(1,1,1),
+    ["Text"] = "0",
+    ["BorderSizePixel"] = 0
+})
 while true do
     local temp = tempmeasure:GetReading(2)
-    if type(temp) == "string" then temp = tonumber(temp) end
+    screennum:ChangeProperties({
+        ["TextColor3"] = Color3.new(1,1,1),
+        ["Text"] = temp
+    })
+    temp = math.floor(temp)
     if temp >= 306 then
         for k,v in pairs(heaters) do
             v:Configure({["SwitchValue"] = false})
