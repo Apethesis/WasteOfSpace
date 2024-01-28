@@ -3,7 +3,7 @@ local dispenser = GetPartFromPort(2, "Dispenser")
 local instrument = GetPartFromPort(3, "Instrument")
 local polyactivate = GetPartFromPort(4, "Polysilicon")
 local polydeactivate = GetPartFromPort(5, "Polysilicon")
-while task.wait(1) do
+while true do
     if instrument:GetReading(4) < 306667 then
         if reactor:GetTemp() < 1000 then
             polyactivate:Trigger()
@@ -20,4 +20,5 @@ while task.wait(1) do
             dispenser:Dispense()
         end
     end
+    task.wait(1)
 end
