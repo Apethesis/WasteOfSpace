@@ -10,7 +10,7 @@ local screennum = screen:CreateElement("TextLabel", {
 })
 while true do
     local enercur = enerins:GetReading(4)
-    wait(1.1)
+    task.wait(1)
     local enernext = enerins:GetReading(4)
     local enerdiff = enernext - enercur
     if enerdiff > 0 then
