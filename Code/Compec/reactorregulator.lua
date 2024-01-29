@@ -13,7 +13,6 @@ while true do
         elseif instrument:GetReading(4) > 306667 then
             TriggerPort(5)
         end
-
     else
         TriggerPort(4)
     end
