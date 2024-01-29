@@ -23,5 +23,5 @@ while true do
             dispenser:Dispense()
         end
     end
-    wait(1)
+    task.wait(1)
 end
