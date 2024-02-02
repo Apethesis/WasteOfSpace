@@ -35,7 +35,7 @@ niko:AddChild(nik2)
 local newvar
 print(JSONEncode(keyboard))
 keyboard:Connect("TextInputted",function(tex) 
-    curtex = tex
+    curtex = string.sub(tex,1,#tex-1)
     if nik2 then
         nik2.Text = curtex
     end
