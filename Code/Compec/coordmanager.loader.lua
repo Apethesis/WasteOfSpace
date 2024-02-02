@@ -76,6 +76,7 @@ end
 elements["mainframeTitle"] = screen:CreateElement("TextLabel", { Position = UDim2.new(0,0,0,0), Size = UDim2.new(1,0,0.1,0), BackgroundColor3 = Color3.fromRGB(26,26,26), TextScaled = true, Font = Enum.Font.Oswald, Text = "Compec's Coordinate Manager", TextColor3 = Color3.fromRGB(214, 214, 214) }) elements.mainFrame:AddChild(elements.mainframeTitle)
 elements["coordScroll"] = screen:CreateElement("ScrollingFrame", { BackgroundColor3 = Color3.fromRGB(255,255,255), BackgroundTransparency = 1, Position = UDim2.new(0,0,0.1,0), Size = UDim2.new(1,0,0.9,0), CanvasSize = UDim2.new(0,0,3.2,0) }) elements.mainFrame:AddChild(elements.coordScroll)
 local function refresh()
+    print(JSONEncode(coordstore))
     for k,v in ipairs(coordstore) do
         if elements["coordScrollX"..k] then
             elements["coordScrollX"..k]:Destroy()
