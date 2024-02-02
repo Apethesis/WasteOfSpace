@@ -33,6 +33,7 @@ local nik2 = screen:CreateElement("TextLabel", {
 niko:AddChild(nik1)
 niko:AddChild(nik2)
 local newvar
+print(JSONEncode(keyboard))
 keyboard:Connect("TextInputted",function(tex) 
     curtex = tex
     if nik2 then
