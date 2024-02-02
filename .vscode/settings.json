@@ -3,6 +3,9 @@
         "GetPartFromPort",
         "GetPartsFromPort",
         "GetPort",
-        "TriggerPort"
+        "TriggerPort",
+        "JSONDecode",
+        "SandboxID",
+        "JSONEncode"
     ]
 }
