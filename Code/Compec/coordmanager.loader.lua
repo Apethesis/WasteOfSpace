@@ -24,17 +24,17 @@ local code = [[
     end
     screen:ClearElements()
     local elements = {}
-    elements["mainFrame"] = screen:CreateElement("Frame", { Size = UDim2.new(1,0,1,0), BackgroundColor3 = Color3.new(56,56,56) })
-    elements["coordAction"] = screen:CreateElement("Frame", { Size = UDim2.new(1,0,0.1,0), Position = UDim2.new(0,0,0.9,0), BackgroundColor3 = Color3.new(255, 255, 255) }) elements.mainFrame:AddChild(elements.coordList)
-    elements["coordActionBox"] = screen:CreateElement("TextBox", { Size = UDim2.new(0.8,0,1,0), Position = UDim2.new(0.2,0,0,0), TextScaled = true, FontFace = Font.new(Font.fromEnum(Enum.Font.Nunito.Family), Enum.FontWeight.SemiBold, Enum.FontStyle.Normal), PlaceholderColor3 = Color3.new(255,255,255), PlaceholderText = "Coordinates", TextColor3 = Color3.new(255,255,255), Text = "" }) elements.coordAction:AddChild(elements.coordActionBox)
+    elements["mainFrame"] = screen:CreateElement("Frame", { Size = UDim2.new(1,0,1,0), BackgroundColor3 = Color3.fromRGB(56,56,56) })
+    elements["coordAction"] = screen:CreateElement("Frame", { Size = UDim2.new(1,0,0.1,0), Position = UDim2.new(0,0,0.9,0), BackgroundColor3 = Color3.fromRGB(255, 255, 255) }) elements.mainFrame:AddChild(elements.coordList)
+    elements["coordActionBox"] = screen:CreateElement("TextBox", { Size = UDim2.new(0.8,0,1,0), Position = UDim2.new(0.2,0,0,0), TextScaled = true, FontFace = Font.new(Font.fromEnum(Enum.Font.Nunito.Family), Enum.FontWeight.SemiBold, Enum.FontStyle.Normal), PlaceholderColor3 = Color3.fromRGB(255,255,255), PlaceholderText = "Coordinates", TextColor3 = Color3.fromRGB(255,255,255), Text = "" }) elements.coordAction:AddChild(elements.coordActionBox)
     if hyperdrive then
-        elements["coordActionLoad"] = screen:CreateElement("TextButton", { Position = UDim2.new(0.1,0,0,0), Size = UDim2.new(0.1,0,1,0), Font = Enum.Font.Ubuntu, Text = "Load From Hyperdrive", TextColor3 = Color3.new(255,255,255), TextScaled = true, BackgroundColor3 = Color3.new(33, 81, 255) }) elements.coordAction:AddChild(elements.coordActionLoad)
-        elements["coordActionSave"] = screen:CreateElement("TextButton", { Position = UDim2.new(0,0,0,0), Size = UDim2.new(0.1,0,1,0), Font = Enum.Font.Ubuntu, TextScaled = true, Text = "Save", TextColor3 = Color3.new(255,255,255), BackgroundColor3 = Color3.new(16, 255, 92) }) elements.coordAction:AddChild(elements.coordActionSave)
+        elements["coordActionLoad"] = screen:CreateElement("TextButton", { Position = UDim2.new(0.1,0,0,0), Size = UDim2.new(0.1,0,1,0), Font = Enum.Font.Ubuntu, Text = "Load From Hyperdrive", TextColor3 = Color3.fromRGB(255,255,255), TextScaled = true, BackgroundColor3 = Color3.fromRGB(33, 81, 255) }) elements.coordAction:AddChild(elements.coordActionLoad)
+        elements["coordActionSave"] = screen:CreateElement("TextButton", { Position = UDim2.new(0,0,0,0), Size = UDim2.new(0.1,0,1,0), Font = Enum.Font.Ubuntu, TextScaled = true, Text = "Save", TextColor3 = Color3.fromRGB(255,255,255), BackgroundColor3 = Color3.fromRGB(16, 255, 92) }) elements.coordAction:AddChild(elements.coordActionSave)
     else
-        elements["coordActionSave"] = screen:CreateElement("TextButton", { Position = UDim2.new(0,0,0,0), Size = UDim2.new(0.2,0,1,0), Font = Enum.Font.Ubuntu, TextScaled = true, Text = "Save", TextColor3 = Color3.new(255,255,255), BackgroundColor3 = Color3.new(16, 255, 92) }) elements.coordAction:AddChild(elements.coordActionSave)
+        elements["coordActionSave"] = screen:CreateElement("TextButton", { Position = UDim2.new(0,0,0,0), Size = UDim2.new(0.2,0,1,0), Font = Enum.Font.Ubuntu, TextScaled = true, Text = "Save", TextColor3 = Color3.fromRGB(255,255,255), BackgroundColor3 = Color3.fromRGB(16, 255, 92) }) elements.coordAction:AddChild(elements.coordActionSave)
     end
-    elements["mainframeTitle"] = screen:CreateElement("TextLabel", { Position = UDim2.new(0,0,0,0), Size = UDim2.new(1,0,0.1,0), BackgroundColor3 = Color3.new(26,26,26), TextScaled = true, Font = Enum.Font.Oswald, Text = "Compec's Coordinate Manager", TextColor3 = Color3.new(214, 214, 214) }) elements.mainFrame:AddChild(elements.mainframeTitle)
-    elements["coordScroll"] = screen:CreateElement("ScrollingFrame", { BackgroundColor3 = Color3.new(255,255,255), BackgroundTransparency = 1, Position = UDim2.new(0,0,0.1,0), Size = UDim2.new(1,0,0.9,0), CanvasSize = UDim2.new(0,0,3.2,0) }) elements.mainFrame:AddChild(elements.coordScroll)
+    elements["mainframeTitle"] = screen:CreateElement("TextLabel", { Position = UDim2.new(0,0,0,0), Size = UDim2.new(1,0,0.1,0), BackgroundColor3 = Color3.fromRGB(26,26,26), TextScaled = true, Font = Enum.Font.Oswald, Text = "Compec's Coordinate Manager", TextColor3 = Color3.fromRGB(214, 214, 214) }) elements.mainFrame:AddChild(elements.mainframeTitle)
+    elements["coordScroll"] = screen:CreateElement("ScrollingFrame", { BackgroundColor3 = Color3.fromRGB(255,255,255), BackgroundTransparency = 1, Position = UDim2.new(0,0,0.1,0), Size = UDim2.new(1,0,0.9,0), CanvasSize = UDim2.new(0,0,3.2,0) }) elements.mainFrame:AddChild(elements.coordScroll)
     local function refresh()
         for k,v in ipairs(coordstore) do
             if elements["coordScrollX"..k] then
@@ -47,7 +47,7 @@ local code = [[
                 Position = UDim2.new(0,0,(0.1*k)-0.1,0),
                 Size = UDim2.new(1,0,0.04,0),
                 BackgroundTransparency = true,
-                TextColor3 = Color3.new(255,255,255),
+                TextColor3 = Color3.fromRGB(255,255,255),
                 TextScaled = true,
                 Font = Enum.Font.PressStart2P,
                 Text = v
@@ -58,7 +58,7 @@ local code = [[
                 Text = "X",
                 BackgroundTransparency = 1,
                 Font = Enum.Font.Nunito,
-                TextColor3 = Color3.new(255,0,0),
+                TextColor3 = Color3.fromRGB(255,0,0),
                 TextScaled = true
             }) elements["coordScroll"..k]:AddChild(elements["coordScrollX"..k])
             elements["coordScroll"..k].MouseButton1Click:Connect(function()
@@ -95,27 +95,27 @@ local code = [[
 end)
 ]]
 local niko = screen:CreateElement("Frame", {
-    BackgroundColor3 = Color3.new(56, 56, 56),
+    BackgroundColor3 = Color3.fromRGB(56, 56, 56),
     Size = UDim2.new(1, 0, 1, 0)
 })
 local nik1 = screen:CreateElement("TextButton", {
     Font = Enum.Font.Nunito,
     Text = "Login",
-    TextColor3 = Color3.new(255, 255, 255),
+    TextColor3 = Color3.fromRGB(255, 255, 255),
     TextScaled = true,
-    BackgroundColor3 = Color3.new(23, 170, 45),
+    BackgroundColor3 = Color3.fromRGB(23, 170, 45),
     Size = UDim2.new(0.5, 0, 0.1, 0),
     Position = UDim2.new(0.25, 0, 0.5, 0)
 })
 local nik2 = screen:CreateElement("TextBox", {
     Position = UDim2.new(0.25, 0, 0.2, 0),
     Size = UDim2.new(0.5, 0, 0.3, 0),
-    PlaceholderColor3 = Color3.new(195, 195, 195),
+    PlaceholderColor3 = Color3.fromRGB(195, 195, 195),
     PlaceholderText = "Password",
-    TextColor3 = Color3.new(195, 195, 195),
+    TextColor3 = Color3.fromRGB(195, 195, 195),
     TextScaled = true,
     Font = Enum.Font.Roboto,
-    BackgroundColor3 = Color3.new(63, 63, 63),
+    BackgroundColor3 = Color3.fromRGB(63, 63, 63),
     Text = "",
 })
 niko:AddChild(nik1)
