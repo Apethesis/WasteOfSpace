@@ -67,7 +67,7 @@ local elements = {}
 elements["mainFrame"] = screen:CreateElement("Frame", { Size = UDim2.new(1,0,1,0), BackgroundColor3 = Color3.fromRGB(56,56,56) })
 elements["coordAction"] = screen:CreateElement("Frame", { Size = UDim2.new(1,0,0.1,0), Position = UDim2.new(0,0,0.9,0), BackgroundColor3 = Color3.fromRGB(255, 255, 255) }) elements.mainFrame:AddChild(elements.coordAction)
 elements["coordActionBox"] = screen:CreateElement("TextLabel", { Size = UDim2.new(0.8,0,1,0), Position = UDim2.new(0.2,0,0,0), TextScaled = true, Font = Enum.Font.Nunito, Text = "Coordinates", TextColor3 = Color3.fromRGB(255,255,255) }) elements.coordAction:AddChild(elements.coordActionBox) newvar = elements.coordActionBox
-if telescope then
+if false then
     elements["coordActionLoad"] = screen:CreateElement("TextButton", { Position = UDim2.new(0.1,0,0,0), Size = UDim2.new(0.1,0,1,0), Font = Enum.Font.Ubuntu, Text = "Load From Telescope", TextColor3 = Color3.fromRGB(255,255,255), TextScaled = true, BackgroundColor3 = Color3.fromRGB(33, 81, 255) }) elements.coordAction:AddChild(elements.coordActionLoad)
     elements["coordActionSave"] = screen:CreateElement("TextButton", { Position = UDim2.new(0,0,0,0), Size = UDim2.new(0.1,0,1,0), Font = Enum.Font.Ubuntu, TextScaled = true, Text = "Save", TextColor3 = Color3.fromRGB(255,255,255), BackgroundColor3 = Color3.fromRGB(16, 255, 92) }) elements.coordAction:AddChild(elements.coordActionSave)
 else
@@ -119,13 +119,9 @@ local function refresh()
     end
     disk:Write('e2eshenanigansda',JSONEncode(alib.encrypt_CTR(sha256(sessionpass),JSONEncode(coordstore))))
 end
-if elements.coordActionLoad then
+if false then
     elements.coordActionLoad.MouseButton1Click:Connect(function()
-        if string.sub(hyperdrive.Coordinates, -1, -4) == "true" then
-            coordstore[#coordstore+1] = string.sub(hyperdrive.Coordinates,1,-6)
-        else
-            coordstore[#coordstore+1] = string.sub(hyperdrive.Coordinates,1,-7)
-        end
+        coordstore[#coordstore+1] = telescope
         refresh()
     end)
 end
