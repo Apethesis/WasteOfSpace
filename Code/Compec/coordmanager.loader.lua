@@ -49,14 +49,11 @@ nik1.MouseButton1Click:Connect(function()
     ready = true
     screen:ClearElements()
 end)
-repeat 
-    task.wait(1)
-until ready
 local hyperdrive = GetPartFromPort(1, "Hyperdrive")
 local telescope = GetPartFromPort(1, "Telescope")
 local sessionpass = disk:Read('spass'); disk:Write('spass','humancentipede')
 local coordstore 
-if disk:Read('e2eshenanigansda') then
+if disk:Read('e2eshenanigansda').len > 0 then
     coordstore = JSONDecode(string.char(unpack(alib.decrypt_CTR(sha256(sessionpass),JSONDecode(disk:Read('e2eshenanigansda'))))))
 else
     coordstore = {}
