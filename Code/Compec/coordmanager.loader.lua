@@ -33,7 +33,7 @@ local nik2 = screen:CreateElement("TextLabel", {
 niko:AddChild(nik1)
 niko:AddChild(nik2)
 local newvar
-keyboard.TextInputted:Connect(function(tex) 
+keyboard:Connect("TextInputted",function(tex) 
     curtex = tex
     if nik2 then
         nik2.Text = curtex
