@@ -1,0 +1,5 @@
+local screen = GetPartFromPort(1, "TouchScreen")
+local disk = GetPartFromPort(1, "Disk")
+local hyperdrive = GetPartFromPort(1, "Hyperdrive")
+local telescope = GetPartFromPort(1, "Telescope")
+local dstats = disk:ReadEntireDisk()
