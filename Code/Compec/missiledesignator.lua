@@ -7,6 +7,7 @@ antenna:Connect("Triggered", function(part)
         mislist.existing[part.GUID] = true
         table.insert(mislist,{ detTriggerWire = GetPartFromPort(part,"TriggerWire"), anchor = GetPartFromPort(part,"Anchor"), gyro = GetPartFromPort(part,"Gyro"), detTrigger = GetPartFromPort(part,"TriggerSwitch"), fuelValve = GetPartFromPort(part,"Valve") })
         local misid = #mislist
+        speaker:Chat("Missile "..misid.." has been added to the table.")
         mislist[#mislist].detTriggerWire:Connect("Triggered", function()
             speaker:Chat("Missile "..misid.." detonation wire has been triggered.")
             speaker:Chat("Removing from table...")
@@ -16,11 +17,13 @@ antenna:Connect("Triggered", function(part)
     end
 end)
 keyboard:Connect("TextInputted", function(stri, plr)
+    print(plr)
     if plr ~= "TheShotGunBoy" then return end
     stri = string.sub(stri,1,-2)
     local i1, i2 = string.find(stri,"!")
     local mid = tonumber(string.sub(stri,1,i1-1))
     local mcmd = string.sub(stri,i2+1)
+    print(mid,mcmd)
     if mislist[mid] then
         if string.sub(mcmd,1,6) == "target" then
             mislist[mid].gyro:Configure({ Seek = "Min9.5 Maxinf TrigMin9.5 TrigMax12.5"..string.sub(mcmd,7)})
