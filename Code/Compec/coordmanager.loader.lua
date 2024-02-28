@@ -110,7 +110,7 @@ local function refresh()
             if telescope then
                 telescope:Configure({ ViewCoordinates = coordstore[curkey] })
             end
-        end)
+        end)    
         elements["coordScrollX"..k].MouseButton1Click:Connect(function()
             local curkey = ""..k
             elements["coordScrollX"..k]:Destroy()
