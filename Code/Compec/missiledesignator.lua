@@ -1,5 +1,5 @@
 local keyboard = GetPartFromPort(1,"Keyboard")
-local antenna = GetPartFromPort(1, "Antenna")
+local antenna = GetPartFromPort(1, "Port")
 local speaker = GetPartFromPort(1, "Speaker")
 local mislist = { existing = {} }
 antenna:Connect("Triggered", function(part)
