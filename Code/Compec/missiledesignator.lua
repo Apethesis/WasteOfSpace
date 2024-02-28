@@ -5,7 +5,7 @@ local mislist = { existing = {} }
 antenna:Connect("Triggered", function(part)
     if not mislist.existing[part.GUID] then
         mislist.existing[part.GUID] = true
-        table.insert(mislist,{ detTriggerWire = GetPartFromPort(part,"TriggerWire"), anchor = GetPartFromPort(part,"Anchor"), gyro = GetPartFromPort(part,"Gyro"), detTrigger = GetPartFromPort(part,"TriggerSwitch"), fuelValve = GetPartFromPort(part,"Valve") })
+        table.insert(mislist,{ detTriggerWire = GetPartFromPort(part,"Port"), anchor = GetPartFromPort(part,"Anchor"), gyro = GetPartFromPort(part,"Gyro"), detTrigger = GetPartFromPort(part,"TriggerSwitch"), fuelValve = GetPartFromPort(part,"Valve") })
         local misid = #mislist
         speaker:Chat("Missile "..misid.." has been added to the table.")
         mislist[#mislist].detTriggerWire:Connect("Triggered", function()
