@@ -43,10 +43,10 @@ while true do
     local curread = instrument:GetReading(7)
     print(curread)
     print(curread+diff)
-    if instrument:GetReading(7) < (0+diff) then 
-        print(adjustswitch(math.round(math.abs(instrument:GetReading(7))/10)))
-    elseif instrument:GetReading(7) > (70+diff) then
-        print(adjustswitch(-(math.round(((instrument:GetReading(7)-70)+diff)/20))))
+    if instrument:GetReading(7) < (30-diff) then 
+        print(adjustswitch(math.round((math.abs(instrument:GetReading(7)-30)-diff)/10)))
+    elseif instrument:GetReading(7) > (90-diff) then
+        print(adjustswitch(-(math.round(((instrument:GetReading(7)-90)+diff)/20))))
     elseif diff == 0 then
         adjustswitch(0)
     end
