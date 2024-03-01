@@ -47,39 +47,85 @@ end)
 keyboard:Connect("TextInputted", function(stri, plr)
     if plr ~= "TheShotGunBoy" then return end
     stri = string.sub(stri,1,-2)
-    local mid, mcmd = stri:match("^(%d+)!(.*)$"); mid = tonumber(mid)
+    local mid, mcmd = stri:match("^(%w+)!(.*)$");
     local args = mcmd:split(" ")
     local cmdres = table.remove(args,1)
     local defseek = "Min9.5 Maxinf TrigMin9.5 TrigMax12.5 "
-    if mislist[mid] then
-        if cmdres == "target" then
-            speaker:Chat("Changing target of missile number "..mid.."...")
-            mislist[mid].gyro:Configure({ Seek = defseek..table.concat(args, " ")})
-        elseif cmdres == "detonate" then
-            speaker:Chat("Detonating missile...")
-            mislist[mid].detTrigger:Configure({ SwitchValue = true })
-            speaker:Chat("Missile "..mid.." detonation wire has been triggered.")
-            speaker:Chat("Removing from table...")
-            local finColor = sLastColor:Lerp(sNoneColor,0.016)
-            statusLight:SetColor(finColor); sLastColor = finColor
-            mislist.existing[mislist[mid].GUID] = nil
-            mislist[mid] = nil
-        elseif cmdres == "launch" then
-            speaker:Chat("Attempting to launch missile number "..mid)
-            mislist[mid].fuelValve:Configure({ SwitchValue = true })
-            mislist[mid].anchor:Configure({ Anchored = false })
-            task.wait(5)
-            mislist[mid].primaryTrigger:Configure({ SwitchValue = true })
-            GetPartFromPort(mislist[mid].gyroTrigger, "DelayWire"):Trigger()
-        elseif cmdres == "anchor" then
-            mislist[mid].anchor:Configure({ Anchored = true })
-        elseif cmdres == "unanchor" then
-            mislist[mid].anchor:Configure({ Anchored = false })
-        elseif cmdres == "drop" then
-            mislist[mid].fuelValve:Configure({ SwitchValue = false })
-            mislist[mid].anchor:Configure({ Anchored = false })
+    if mid == "a" then
+        for k,v in ipairs(mislist) do
+            mid = k
+            if mislist[mid] then
+                if cmdres == "target" then
+                    speaker:Chat("Changing target of missile number "..mid.."...")
+                    mislist[mid].gyro:Configure({ Seek = defseek..table.concat(args, " ")})
+                elseif cmdres == "detonate" then
+                    speaker:Chat("Detonating missile...")
+                    mislist[mid].detTrigger:Configure({ SwitchValue = true })
+                    speaker:Chat("Missile "..mid.." detonation wire has been triggered.")
+                    speaker:Chat("Removing from table...")
+                    local finColor = sLastColor:Lerp(sNoneColor,0.016)
+                    statusLight:SetColor(finColor); sLastColor = finColor
+                    mislist.existing[mislist[mid].GUID] = nil
+                    mislist[mid] = nil
+                elseif cmdres == "launch" then
+                    speaker:Chat("Attempting to launch missile number "..mid)
+                    mislist[mid].fuelValve:Configure({ SwitchValue = true })
+                    mislist[mid].anchor:Configure({ Anchored = false })
+                    task.wait(5)
+                    mislist[mid].primaryTrigger:Configure({ SwitchValue = true })
+                    GetPartFromPort(mislist[mid].gyroTrigger, "DelayWire"):Trigger()
+                elseif cmdres == "anchor" then
+                    mislist[mid].anchor:Configure({ Anchored = true })
+                elseif cmdres == "unanchor" then
+                    mislist[mid].anchor:Configure({ Anchored = false })
+                elseif cmdres == "drop" then
+                    mislist[mid].fuelValve:Configure({ SwitchValue = false })
+                    mislist[mid].anchor:Configure({ Anchored = false })
+                elseif cmdres == "open" then
+                    mislist[mid].fuelValve:Configure({ SwitchValue = true })
+                elseif cmdres == "close" then
+                    mislist[mid].fuelValve:Configure({ SwitchValue = false })
+                end
+            else
+                speaker:Chat("Invalid DESSOL ID.")
+            end
         end
     else
-        speaker:Chat("Invalid DESSOL ID.")
+        mid = tonumber(mid)
+        if mislist[mid] then
+            if cmdres == "target" then
+                speaker:Chat("Changing target of missile number "..mid.."...")
+                mislist[mid].gyro:Configure({ Seek = defseek..table.concat(args, " ")})
+            elseif cmdres == "detonate" then
+                speaker:Chat("Detonating missile...")
+                mislist[mid].detTrigger:Configure({ SwitchValue = true })
+                speaker:Chat("Missile "..mid.." detonation wire has been triggered.")
+                speaker:Chat("Removing from table...")
+                local finColor = sLastColor:Lerp(sNoneColor,0.016)
+                statusLight:SetColor(finColor); sLastColor = finColor
+                mislist.existing[mislist[mid].GUID] = nil
+                mislist[mid] = nil
+            elseif cmdres == "launch" then
+                speaker:Chat("Attempting to launch missile number "..mid)
+                mislist[mid].fuelValve:Configure({ SwitchValue = true })
+                mislist[mid].anchor:Configure({ Anchored = false })
+                task.wait(5)
+                mislist[mid].primaryTrigger:Configure({ SwitchValue = true })
+                GetPartFromPort(mislist[mid].gyroTrigger, "DelayWire"):Trigger()
+            elseif cmdres == "anchor" then
+                mislist[mid].anchor:Configure({ Anchored = true })
+            elseif cmdres == "unanchor" then
+                mislist[mid].anchor:Configure({ Anchored = false })
+            elseif cmdres == "drop" then
+                mislist[mid].fuelValve:Configure({ SwitchValue = false })
+                mislist[mid].anchor:Configure({ Anchored = false })
+            elseif cmdres == "open" then
+                mislist[mid].fuelValve:Configure({ SwitchValue = true })
+            elseif cmdres == "close" then
+                mislist[mid].fuelValve:Configure({ SwitchValue = false })
+            end
+        else
+            speaker:Chat("Invalid DESSOL ID.")
+        end
     end
 end)
