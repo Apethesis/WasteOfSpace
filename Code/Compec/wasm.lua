@@ -38,8 +38,12 @@ for line in io.lines(arg[1]) do
                 fl:write(toNum(string.sub(token,3)))
             elseif instructions[string.lower(token)] then
                 fl:write(instructions[string.lower(token)])
-            else
+            elseif tonumber(token) then
                 fl:write(tonumber(token))
+            else
+                for i=1,#token do
+                    fl:write(string.byte(token,i))
+                end
             end
         end
     end
