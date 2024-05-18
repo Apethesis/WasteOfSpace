@@ -8,6 +8,10 @@ local cState = {
         [3] = 0x00, -- R3, output for math/binary manipulation.
         [4] = 0x01, -- R4, program counter.
         [5] = 2^18, -- R5, stack pointer, referencing the memory intLimit.
+        [6] = 0x00, -- R6, flag register, 0x00 is absolute, 0x01 is relative
+        [7] = 0x00, -- R7, flag register, 0x00 is JMP, 0x01 is JMP if R3 zero
+        [8] = 0x00, -- R8, flag register, 0x00 is LShift, 0x01 is RShift, 0x02 is ARShift
+        [9] = 0x00, -- R9, flag register, 0x00 is normal, 0x01 is NOT (affects all bitwise operations except for Shift)
     },
     intLimit = 2^18 -- such an arbitrary limit...
 }
@@ -22,12 +26,12 @@ local function clamp(num,top,bottom)
         return num
     end
 end
-local function readByte(addr)
-    return mem[clamp(addr,cState.intLimit,0)] or 0
+function mem:readByte(addr)
+    return self[clamp(addr,cState.intLimit,0)] or 0
 end
-local function fetchByte(addr)
+function mem:fetchByte(addr)
     cState.reg[4] = clamp(cState.reg[4]+1,cState.intLimit,0)
-    return mem[cState.reg[4]-1] or 0
+    return self[cState.reg[4]-1] or 0
 end
 function mem:stackPush(data)
     mem[cState.reg[5]] = clamp(data,cState.intLimit,0)
@@ -51,6 +55,56 @@ end
 local function exec(memInput)
     local finished = false
     local instTable = {
+        [0x01] = function() -- SUB, subtracts R1 from R2, outputs in R3
+            cState.reg[3] = clamp(cState.reg[1] - cState.reg[2],cState.intLimit, 0)
+        end,
+        [0x02] = function() -- ADD, adds R2 to R1, outputs in R3
+            cState.reg[3] = clamp(cState.reg[1] + cState.reg[2],cState.intLimit, 0)
+        end,
+        [0x03] = function() -- DIV, divides R1 by R2, outputs in R3
+            cState.reg[3] = clamp(cState.reg[1] / cState.reg[2],cState.intLimit, 0)
+        end,
+        [0x04] = function() -- MUL, multiplies R1 by R2, outputs in R3
+            cState.reg[3] = clamp(cState.reg[1] * cState.reg[2],cState.intLimit, 0)
+        end,
+        [0x05] = function() -- AND, does a bitwise AND on R1 + R2, outputs in R3
+            if cState.reg[9] == 0 then
+                cState.reg[3] = clamp(bit32.band(cState.reg[1],cState.reg[2]),cState.intLimit, 0)
+            else 
+                cState.reg[3] = clamp(bit32.bnot(bit32.band(cState.reg[1],cState.reg[2])),cState.intLimit, 0)
+            end
+        end,
+        [0x06] = function() -- OR, does a bitwise OR on R1 + R2, outputs in R3
+            if cState.reg[9] == 0 then
+                cState.reg[3] = clamp(bit32.bor(cState.reg[1],cState.reg[2]),cState.intLimit, 0)
+            else
+                cState.reg[3] = clamp(bit32.bnot(bit32.bor(cState.reg[1],cState.reg[2])),cState.intLimit, 0)
+            end
+        end,
+        [0x07] = function() -- NOT, does a bitwise NOT on R1, outputs in R3
+            cState.reg[3] = clamp(bit32.bnot(cState.reg[1]),cState.intLimit, 0)
+        end,
+        [0x08] = function() -- XOR, does a bitwise XOR on R1 + R2, outputs in R3
+            if cState.reg[9] == 0 then
+                cState.reg[3] = clamp(bit32.bxor(cState.reg[1],cState.reg[2]),cState.intLimit, 0)
+            else
+                cState.reg[3] = clamp(bit32.bnot(bit32.bxor(cState.reg[1],cState.reg[2])),cState.intLimit, 0)
+            end
+        end,
+        [0x09] = function() -- SHF (Shift), shifts R1 by R2, outputs in R3, type of shift varies based on R8 value
+            if cState.reg[8] == 0 then
+                cState.reg[3] = clamp(bit32.lshift(cState.reg[1],cState.reg[2]),cState.intLimit,0)
+            elseif cState.reg[8] == 1 then
+                cState.reg[3] = clamp(bit32.rshift(cState.reg[1],cState.reg[2]),cState.intLimit,0)
+            else
+                cState.reg[3] = clamp(bit32.arshift(cState.reg[1],cState.reg[2]),cState.intLimit,0)
+            end
+        end,
+        [0x0A] = function(memory) -- MTR, moves first arg into register chosen by second arg (1-128)
+            cState.reg[clamp(memory:fetchByte(),128,1)] = clamp(memory:fetchByte(),cState.intLimit,0)
+        end,
+        [0x0B] = function(memory) -- MFRM, moves
 
+        end,
     }
 end
