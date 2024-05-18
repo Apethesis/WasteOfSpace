@@ -12,17 +12,53 @@ local cState = {
         [7] = 0x00, -- R7, flag register, 0x00 is JMP, 0x01 is JMP if R3 zero
         [8] = 0x00, -- R8, flag register, 0x00 is LShift, 0x01 is RShift, 0x02 is ARShift
         [9] = 0x00, -- R9, flag register, 0x00 is normal, 0x01 is NOT (affects all bitwise operations except for Shift)
+        [10] = 0x00, -- R10, flag register, 0x00 jumps if R3 is zero, 0x01 jumps if R3 is not zero. 0x02 jumps if R3 is greater than zero
+        [11] = 0x00, -- R11, barely useful Flags register
     },
     intLimit = 2^18 -- such an arbitrary limit...
 }
 local mem = {}
-local function clamp(num,top,bottom) 
+local function toNum(num) -- Intended for easier bit manipulation
+    return tonumber(num,2)
+end
+local bitFlags = {
+    carry = toNum("1000"),
+    zero = toNum("0100"),
+    parity = toNum("0010"),
+}
+function cState:setFlag(flag,state)
+    if state then
+        self.reg[11] = bit32.bor(self.reg[11],bitFlags[flag])
+    else
+        self.reg[11] = bit32.band(self.reg[11],bit32.bnot(bitFlags[flag]))
+    end
+end
+local function clamp(num,top,bottom,setFlag) 
     if not num then num = 0 end
+    if setFlag and (num % 2) == 0 then 
+        cState:setFlag("parity",true) 
+    elseif setFlag and (num % 2) == 1 then 
+        cState:setFlag("parity",false) 
+    end
+    if setFlag and num == 0 then
+        cState:setFlag("zero",true) 
+    else
+        cState:setFlag("zero",false) 
+    end
     if num > top then
+        if setFlag then 
+            cState:setFlag("carry",true) 
+        end
         return clamp(num-top,top,bottom)
     elseif num < top and num < bottom then
+        if setFlag then 
+            cState:setFlag("carry",true) 
+        end
         return bottom
     else
+        if setFlag then 
+            cState:setFlag("carry",false) 
+        end
         return num
     end
 end
@@ -56,16 +92,16 @@ local function exec(memInput)
     local finished = false
     local instTable = {
         [0x01] = function() -- SUB, subtracts R1 from R2, outputs in R3
-            cState.reg[3] = clamp(cState.reg[1] - cState.reg[2],cState.intLimit, 0)
+            cState.reg[3] = clamp(cState.reg[1] - cState.reg[2],cState.intLimit, 0, true)
         end,
         [0x02] = function() -- ADD, adds R2 to R1, outputs in R3
-            cState.reg[3] = clamp(cState.reg[1] + cState.reg[2],cState.intLimit, 0)
+            cState.reg[3] = clamp(cState.reg[1] + cState.reg[2],cState.intLimit, 0, true)
         end,
         [0x03] = function() -- DIV, divides R1 by R2, outputs in R3
-            cState.reg[3] = clamp(cState.reg[1] / cState.reg[2],cState.intLimit, 0)
+            cState.reg[3] = clamp(cState.reg[1] / cState.reg[2],cState.intLimit, 0, true)
         end,
         [0x04] = function() -- MUL, multiplies R1 by R2, outputs in R3
-            cState.reg[3] = clamp(cState.reg[1] * cState.reg[2],cState.intLimit, 0)
+            cState.reg[3] = clamp(cState.reg[1] * cState.reg[2],cState.intLimit, 0, true)
         end,
         [0x05] = function() -- AND, does a bitwise AND on R1 + R2, outputs in R3
             if cState.reg[9] == 0 then
@@ -103,8 +139,63 @@ local function exec(memInput)
         [0x0A] = function(memory) -- MTR, moves first arg into register chosen by second arg (1-128)
             cState.reg[clamp(memory:fetchByte(),128,1)] = clamp(memory:fetchByte(),cState.intLimit,0)
         end,
-        [0x0B] = function(memory) -- MFRM, moves
-
+        [0x0B] = function(memory) -- MFR, moves specified register value to memory address chosen by second arg
+            local d1, d2 = clamp(memory:fetchByte(),128,1), clamp(memory:fetchByte(),cState.intLimit,0)
+            if cState.reg[6] == 0 then
+                memory[d2] = cState.reg[d1]
+            else
+                memory[cState.reg[4]+d2] = cState.reg[d1]
+            end
+        end,
+        [0x0C] = function(memory) -- MTRM, moves value of memory address chosen to register specified by second arg
+            local d1, d2 = clamp(memory:fetchByte(),cState.intLimit,0), clamp(memory:fetchByte(),128,1)
+            if cState.reg[6] == 0 then
+                cState.reg[d2] = memory[d1]
+            else
+                cState.reg[cState.reg[4]+d2] = memory[d1]
+            end
+        end,
+        [0x0D] = function(memory) -- JMP, jumps to specified address
+            local jumpAddress = clamp(memory:fetchByte(),cState.intLimit,0)
+            memory:stackPush(cState.reg[4])
+            cState.reg[4] = jumpAddress
+        end,
+        [0x0E] = function(memory) -- JMC (Jump Conditional), jumps to specified address if R3 meets chosen condition
+            local jumpAddress = clamp(memory:fetchByte(),cState.intLimit,0)
+            if cState.reg[10] == 0x00 and cState.reg[3] == 0x00 then
+                memory:stackPush(cState.reg[4])
+                cState.reg[4] = jumpAddress
+            elseif cState.reg[10] == 0x01 and cState.reg[3] ~= 0x00 then
+                memory:stackPush(cState.reg[4])
+                cState.reg[4] = jumpAddress
+            elseif cState.reg[10] == 0x01 and cState.reg[3] > 0x00 then
+                memory:stackPush(cState.reg[4])
+                cState.reg[4] = jumpAddress
+            end
+        end,
+        [0x0F] = function(memory) -- RET, returns from a jump
+            local retAddr = memory:stackPop()
+            cState.reg[4] = retAddr
+        end,
+        [0x10] = function(memory) -- MRE, moves one register value to another
+            local d1, d2 = clamp(memory:fetchByte(),128,1), clamp(memory:fetchByte(),128,1)
+            cState.reg[d2] = cState.reg[d1]
         end,
     }
+    repeat
+        local ins = memInput:fetchByte()
+        if cState.reg[4] == cState.intLimit then
+            finished = true
+            break
+        end
+        if ins ~= 0x00 then
+            if ins > 0x00 and ins < 0x10 then
+                instTable[ins](memInput)
+            end
+        end
+    until finished
 end
+-- Now go on, do whatever here
+-- I will leave a default here.
+readDisk(rom)
+exec(mem)
