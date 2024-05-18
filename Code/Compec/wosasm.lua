@@ -181,6 +181,14 @@ local function exec(memInput)
             local d1, d2 = clamp(memory:fetchByte(),128,1), clamp(memory:fetchByte(),128,1)
             cState.reg[d2] = cState.reg[d1]
         end,
+        [0x11] = function(memory) -- IMM, copies value of argument one to memory address given by argument two
+            local d1, d2 = clamp(memory:fetchByte(),cState.intLimit,0), clamp(memory:fetchByte(),cState.intLimit,0)
+            memory[d2] = d1
+        end,
+        [0x12] = function(memory) -- MMO, copies value of memory address from argument one to argument two
+            local d1, d2 = clamp(memory:fetchByte(),cState.intLimit,0), clamp(memory:fetchByte(),cState.intLimit,0)
+            memory[d2] = memory[d1]
+        end
     }
     repeat
         local ins = memInput:fetchByte()
